@@ -2,7 +2,7 @@ const {Schema, model} = require("mongoose")
 
 
 const Category = new Schema({
-    title: {type:String, required:true}
+    title: {type:String, required:true, unique:true}
 })
 
 

@@ -2,16 +2,18 @@ const {Schema, model, ObjectId} = require("mongoose")
 
 
 const Blog = new Schema({
+    mainTitle: {type:String, required:true},
     imageBlog: {type:String, required:true},
-    mainTitle:{type:String, required:true},
-    introductionTitle:{type:String, required:true},
     introductionText:{type:String, required:true},
-    authorName: {type:ObjectId, ref: "User",  required:true},
-    categoryId:{type:ObjectId, required:true, ref: "Category"},
+    author: {type:String,  required:true},
+    categoryId:{type:String, required:true},
     readingTime:{type:Number, required:true},
     likes: {type:Number, required:true, default: 0},
     comments: [{type:ObjectId, required:false, ref: "Comment"}],
     share:  {type:Number, required:true, default: 0},
+    description:{type:String, required:true},
+    descriptionTag:{type:String, required:true},
+    date: {type:String, required: true}
 })
 
 module.exports = model("Blog", Blog);
