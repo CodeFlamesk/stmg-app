@@ -9,7 +9,7 @@ const fileMiddleware = require("./middleware/filePath.middleware")
 const corsMiddleware = require("./middleware/cors.middleware")
 const path = require("path")
 const cookieParser = require("cookie-parser")
-
+const errorMiddleware = require("./middleware/error.middleware")
 
 
 app.use(fileUpload({}));
@@ -21,7 +21,7 @@ app.use(fileMiddleware(path.resolve(__dirname, "static")));
 
 
 app.use("/api", router);
-
+app.use(errorMiddleware);
 
 
 const start = async () => {

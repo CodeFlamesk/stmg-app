@@ -13,6 +13,6 @@ module.exports = class ApiError extends Error {
     }
 
     static BadRequest(message, errors = []) {
-        return new ApiError(400,"Пользователь не авторизован");
+        return new ApiError(400, message, errors);
     }
 }
