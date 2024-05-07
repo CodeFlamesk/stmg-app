@@ -7,7 +7,7 @@ const Blog = new Schema({
     introductionText:{type:String, required:true},
     author: {type:String,  required:true},
     categoryId:{type:String, required:true},
-    readingTime:{type:Number, required:true},
+    readingTime:{type:String, required:true},
     likes: {type:Number, required:true, default: 0},
     comments: [{type:ObjectId, required:false, ref: "Comment"}],
     share:  {type:Number, required:true, default: 0},

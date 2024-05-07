@@ -8,14 +8,15 @@ const fileUpload = require("express-fileupload");
 const fileMiddleware = require("./middleware/filePath.middleware")
 const corsMiddleware = require("./middleware/cors.middleware")
 const path = require("path")
+const cookieParser = require("cookie-parser")
 
 
 
-app.use(fileUpload({}))
-app.use(corsMiddleware)
+app.use(fileUpload({}));
+app.use(corsMiddleware);
 app.use(express.json());
-
-app.use(express.static("static"))
+app.use(cookieParser());
+app.use(express.static("static"));
 app.use(fileMiddleware(path.resolve(__dirname, "static")));
 
 

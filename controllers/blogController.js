@@ -2,8 +2,8 @@
 
 const BlogService = require("../services/blogService");
 const Blog = require("../models/Blog");
-const readingTime = require("reading-time");
 const Category = require("../models/Category");
+
 
 
 
@@ -22,12 +22,15 @@ class BlogController {
                 description, 
             } = req.body;
 
-            // Достатьфайл из запроса
-            const file = req.files.file
+        
+            const date = await BlogService.createDate();
+
+            const file = req.files.file;
             
             // вернуть имя файла и переместить файл в папку static
             const fileName = await BlogService.addImage(req, file);
-            const {time} = await  readingTime(description);
+
+            const time = await BlogService.createTimeReading(description)
 
             const category = await Category.findById({_id})
             const blog = new Blog({
@@ -39,7 +42,7 @@ class BlogController {
                 readingTime: time,
                 description:description,
                 descriptionTag:descriptionTag,
-                date: new Date()
+                date: date
             });
             
             await blog.save();
@@ -61,13 +64,22 @@ class BlogController {
         }
     }
 
-    async getBlogs(req, res) {
+    async getAllBlogs(req, res) {
         try {
-            const {categoryId} = req.query;
-            const blogs = await Blog.find({categoryId: categoryId});
-            return res.json(blogs)
+
+            const {id} = req.query;
+
+            if(id === "") {
+                const blogs = await Blog.find().limit(3)
+                return res.json(blogs);
+            } else {
+                const category = await Category.findById({_id: id})
+                const blogs = await Blog.find({categoryId:category.title}).limit(3)
+                return res.json(blogs);
+            }
         }catch(e) {
-            console.log(e)
+            console.error(error);
+            return res.status(500).json({ message: "Internal server error" });
         }
     }
 
