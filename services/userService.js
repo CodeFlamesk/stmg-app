@@ -10,18 +10,18 @@ const tokenService = require("./tokenService");
 
 class UserService {
 
-    async registration(req, email, password) {
+    async registration(req, email, password, name, surname) {
         const candidate = await User.findOne({email});
         if(candidate) {
             throw  ApiError.BadRequest(`Пользователь с таким ${email} уже существует`);
-
         }
+
         const hashPassword = await bcrypt.hash(password, 3);
         const activationLink = uuid.v4();
 
-        const user = await User.create({email, password: hashPassword, activationLink});
+        const user = await User.create({email, password: hashPassword, activationLink, name, surname});
 
-        await MailService.sendActivationMail(req, email, `${process.env.API_URL}/api/user/activate/${activationLink}`);
+        await MailService.sendActivationMail(req, email, name, surname, `${process.env.API_URL}/api/user/activate/${activationLink}`);
 
         const userDto = new UserDto(user);
 
@@ -78,8 +78,8 @@ class UserService {
         }
 
         const userData = tokenService.validateRefreshToken(refreshToken);
-        const tokenFronDb = await tokenService.findToken(refreshToken);
-        if(!userData || !tokenFronDb) {
+        const tokenFromDb = await tokenService.findToken(refreshToken);
+        if(!userData || !tokenFromDb) {
             throw ApiError.UnathorizedError();
         }
 

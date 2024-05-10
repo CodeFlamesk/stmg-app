@@ -21,7 +21,6 @@ class BlogController {
                 author, 
                 description, 
             } = req.body;
-
         
             const date = await BlogService.createDate();
 
