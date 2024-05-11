@@ -7,6 +7,7 @@ const User = new Schema({
     password: {type:String, required:true},
     isActivated: {type:Boolean, required: false},
     activationLink: {type:String},
+    role:{type:String, required:true, default: "USER"}
 })
 
 module.exports = model("User", User);

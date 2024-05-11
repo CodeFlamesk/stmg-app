@@ -18,14 +18,14 @@ module.exports = function(err, req, res, next) {
         }
 
 
-        const userData = tokenService.accessToken(accessToken)
-
+        const userData = tokenService.validateAccessToken(accessToken)
+        
         if(!userData) {
             return next(ApiError.UnathorizedError())
         }
 
-
         req.user = userData;
+        
         next()
     } catch(e) {
         return next(ApiError.UnathorizedError())

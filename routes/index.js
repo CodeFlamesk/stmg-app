@@ -4,7 +4,9 @@ const categoryRouter = require("./categoryRouter");
 const blogRouter = require("./blogRouter");
 const userRouter = require("./userRouter");
 
-router.use("/category", categoryRouter)
+
+
+router.use("/category",  categoryRouter)
 router.use("/blog", blogRouter)
 router.use("/user", userRouter)
 

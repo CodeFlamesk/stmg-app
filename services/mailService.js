@@ -15,6 +15,7 @@ class MailService {
             }
         })
     }
+
     async sendActivationMail(req, to, name, surname, link) {
         await this.transporter.sendMail({
             from: process.env.SMTP_USER,
@@ -26,6 +27,21 @@ class MailService {
                     <h1>Доброго времени суток, ${name} ${surname}</h1>
                     <h2>Для активации перейдите по ссылке</h2>
                     <a href="${link}">${link}</a>
+                </div>
+            `
+        })
+    }
+
+    async sendPasswordForgot(to, code) {
+        await this.transporter.sendMail({
+            from: process.env.SMTP_USER,
+            to: to,
+            subject: "Восстановление пароля вашего аккаунта на сайте: " + process.env.API_URL,
+            text: "",
+            html: `
+                <div>
+                    
+                    <h2>Введите этот код в форму на сайте: ${code}</h2>
                 </div>
             `
         })
