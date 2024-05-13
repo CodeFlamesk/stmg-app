@@ -68,6 +68,7 @@ class UserController {
             const {refreshToken} = req.cookies;
             const userData = await userService.refresh(refreshToken);
             res.cookie("refreshToken", userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
+
             return res.json(userData);
         } catch(e) {
             next(e)
@@ -96,13 +97,31 @@ class UserController {
 
     async changePasswordForgot(req, res, next) {
         
-            const {email, password} = req.body;
+            try {
+                const {email, password} = req.body;
             
-            await userService.changePasswordForgot(email, password);
-
-            return res.json({message: "Вы поменяли пароль"});
-        
+                await userService.changePasswordForgot(email, password);
+    
+                return res.json({message: "Вы поменяли пароль"});
+            } catch(e) {
+                
+            }
     }
+
+    async changePassword(req, res, next) {
+        try {
+            const {password, email, newPassoword} = req.body;
+            
+            const userData = await userService.changePassword(password, newPassoword, email);
+
+            res.cookie("refreshToken", userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
+            return res.json(userData);
+
+        } catch(e) {
+            next(e)
+        }
+    }
+
 }
 
 

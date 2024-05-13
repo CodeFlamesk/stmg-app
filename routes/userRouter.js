@@ -17,6 +17,7 @@ router.get("/users",authMiddleware,  UserController.getUsers)
 
 router.post("/forgot", UserController.forgotPassword);
 router.post("/password", UserController.changePasswordForgot)
+router.post("/password/change",authMiddleware,  UserController.changePassword)
 
 
 module.exports = router

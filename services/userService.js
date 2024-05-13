@@ -51,7 +51,7 @@ class UserService {
             }
 
             const isPassEquals = await bcrypt.compare(password, user.password);
-            console.log(isPassEquals)
+            
             if(!isPassEquals) {
                 if(user) {
                     console.log(user)
@@ -65,7 +65,7 @@ class UserService {
             await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
             return { ...tokens, user: userDto }
-        }catch(e) {
+        } catch(e) {
             throw e
         }
     }
@@ -134,9 +134,40 @@ class UserService {
             await user.save()
         
             return user;
-
-        
     }
+
+
+
+    async changePassword(password, newPassword, email) {
+        
+        try {
+            const user = await User.findOne({email});
+            if(!user) {
+                throw  ApiError.BadRequest('Пользователь не был найден!')
+            }
+
+            const isPassEquals = await bcrypt.compare(password, user.password);
+            
+            if(!isPassEquals) {
+                throw ApiError.BadRequest("Ваш прежний пароль введен неправильно.")
+            }
+
+            const hashPassword = await bcrypt.hash(newPassword, 3);
+
+            user.password = hashPassword;
+            await user.save();
+
+            const userDto = new UserDto(user)
+            const tokens = tokenService.generateTokens({...userDto});
+            await tokenService.saveToken(userDto.id, tokens.refreshToken);
+    
+            return { ...tokens, user: userDto }
+        } catch(e) {
+            throw e
+        }
+
+    }
+
 }
 
 
