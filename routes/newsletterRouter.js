@@ -1,8 +1,14 @@
 const Router = require("express");
 const router = new Router();
 const NewsletterController = require("../controllers/newsletterController")
+const {body} = require("express-validator")
 
-router.post("/", NewsletterController.subscribe)
+
+
+router.post("/",
+    body("email").isEmail(),
+    NewsletterController.subscribe
+)
 
 
 module.exports = router

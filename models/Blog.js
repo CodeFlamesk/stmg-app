@@ -13,7 +13,8 @@ const Blog = new Schema({
     share:  {type:Number, required:true, default: 0},
     description:{type:String, required:true},
     descriptionTag:{type:String, required:true},
-    date: {type:String, required: true}
+    date: {type:String, required: true},
+    rating:  {type:Number, required:true, default: 0},
 })
 
 module.exports = model("Blog", Blog);

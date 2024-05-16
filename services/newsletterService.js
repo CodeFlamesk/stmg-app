@@ -13,7 +13,7 @@ class NewsletterService {
                 throw  ApiError.BadRequest(`Пользователь с таким email: ${email} уже подписан на наши обьявления`);
             }
                 
-            // добавить проверку email на правильность ввода данных , и если что выкидывать ошибку
+            // добавить проверку email на правильность ввода данных , и если что выкидывать ошибку, валидация
             const user = await Newsletter.create({email});
             await user.save();
 

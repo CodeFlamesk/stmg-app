@@ -4,9 +4,6 @@ const {validationResult} = require("express-validator")
 
 class UserController {
 
-
-
-
     async registration(req, res, next) {
         try {
 
@@ -45,7 +42,9 @@ class UserController {
 
             const {refreshToken} = req.cookies;
             const token = await userService.logout(refreshToken);
+
             res.clearCookie("refreshToken");
+
             return res.json(token)
         }catch(e) {
             next(e)
@@ -61,7 +60,6 @@ class UserController {
             next(e)
         }
     }
-
 
     async refresh(req, res, next) {
         try {
@@ -110,9 +108,9 @@ class UserController {
 
     async changePassword(req, res, next) {
         try {
-            const {password, email, newPassoword} = req.body;
+            const {password, email, newPassword} = req.body;
             
-            const userData = await userService.changePassword(password, newPassoword, email);
+            const userData = await userService.changePassword(password, newPassword, email);
 
             res.cookie("refreshToken", userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
             return res.json(userData);
@@ -122,7 +120,46 @@ class UserController {
         }
     }
 
-}
+    async addImage(req, res, next) {
+        try {
+            const {file} = req.files;
+            const {id} = req.body;
+
+            const userData = await userService.addAvatar(req, file, id);
+            return  res.json(userData)
+        } catch(e) {
+            next(e)
+        }
+    }
+
+    async deleteAvatar(req, res, next) {
+        try {
+            const {id} = req.body;
+
+            const userData = await userService.deleteAvatar(req, id);
+
+            return  res.json(userData)
+        } catch(e) {
+            next(e)
+        }
+    }
+
+    async deleteUser(req, res, next) {
+        try {
+            const {id} = req.body;
+            const {refreshToken} = req.cookies;
+
+            const message = await userService.deleteUser(id, refreshToken);
+
+            res.clearCookie("refreshToken");
+
+            return res.json({message: message});
+
+        } catch(e) {
+
+        }
+    }
+} 
 
 
 module.exports = new UserController

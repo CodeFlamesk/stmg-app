@@ -8,6 +8,9 @@ const ApiError = require("../exceptions/apiError")
 const UserDto = require("../dtos/user-dto");
 const tokenService = require("./tokenService");
 const mailService = require("./mailService");
+const path = require("path");
+const fs = require("fs");
+const serviceAll = require("./serviceAll");
 
 class UserService {
 
@@ -31,7 +34,6 @@ class UserService {
 
         return { ...tokens, user: userDto }
     }
-
 
     async activate(activationLink) {
         const user = await User.findOne({activationLink});
@@ -70,7 +72,6 @@ class UserService {
         }
     }
 
-
     async logout(refreshToken) {
         const token = await tokenService.removeToken(refreshToken);
         return token;
@@ -96,7 +97,6 @@ class UserService {
         return { ...tokens, user: userDto }
     }
 
-
     async getUsers() {
         const users = await User.find()
         return users;
@@ -109,7 +109,7 @@ class UserService {
                 throw  ApiError.BadRequest('Пользователь не был найден, проверьте правильность ввода вашего email')
             }
 
-            const code = 343546;
+            const code = await serviceAll.createCode();
 
             await mailService.sendPasswordForgot(email, code);
 
@@ -135,8 +135,6 @@ class UserService {
         
             return user;
     }
-
-
 
     async changePassword(password, newPassword, email) {
         
@@ -168,6 +166,94 @@ class UserService {
 
     }
 
+    async addAvatar(req, file, id){
+        try {
+            
+
+            const user = await User.findById({_id: id});
+
+            const avatarName = uuid.v4() + ".jpg";
+
+            const filePath = path.join(req.pathStatic + "/user", avatarName);
+
+            await file.mv(filePath);
+
+            user.avatar = avatarName;
+            await user.save();
+
+            const userDto = new UserDto(user)
+            
+            return  userDto;
+        } catch(e){
+            throw e
+        }
+    }
+
+    async deleteAvatar (req, id){
+        try {
+            const user = await User.findById({_id:id}); 
+            
+            if (!user) {
+                throw  ApiError.BadRequest('Пользователь не был найден!')
+            }
+
+            const filePath = path.join(req.pathStatic + "/user", user.avatar);
+
+            fs.unlinkSync(filePath); 
+
+            await user.save();
+
+            const userDto = new UserDto(user)
+            
+            return userDto;
+
+        } catch(e) {
+            throw e
+            
+        }
+    }
+
+    async deleteUser(id, refreshToken) {
+        try {
+            const user = await User.findById({_id:id}); 
+
+            if (!user) {
+                throw  ApiError.BadRequest('Пользователь не был найден!')
+            }
+
+            if(user.avatar) {
+                const filePath = path.join(req.pathStatic + "/user", user.avatar);
+                fs.unlinkSync(filePath); 
+            }
+
+            const token = await tokenService.removeToken(refreshToken);
+            console.log(token);
+
+            await User.deleteOne({ _id: id});
+            return "Delete user";
+
+        } catch(e) {
+            throw e
+        }
+    }
+
+
+    async deleteComment(userId, commentId) {
+        try {
+            const user = await User.findOne({_id: userId});
+
+            if (!user) {
+                throw  ApiError.BadRequest('Пользователь не был найден!')
+            } 
+            
+            user.comments = await user.comments.filter(item => item._id !== commentId);
+
+            await user.save();
+            
+        } catch(e) {
+            throw e;
+        }
+    }
 }
 
 
