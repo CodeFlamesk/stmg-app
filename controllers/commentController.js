@@ -28,7 +28,7 @@ class CommentController {
         }
     }
 
-    async getAllComments(req, res, next) {
+    async getAllCommentsCheck(req, res, next) {
         try {
             const comments = await Comment.find({isCheck: true}).limit(6);
             return res.json(comments)
@@ -37,12 +37,20 @@ class CommentController {
         }
     }
 
+    async getAllComments(req, res, next) {
+        try {
+            const comments = await Comment.find({isCheck:false});
+            return res.json(comments)
+        } catch(e) {
+            next(e)
+        }
+    }
     async check(req, res, next) {
         // role ADMIN
         try {
-            const {commentId} = req.body;
+            const {id} = req.body;
 
-            const comment = await Comment.findById({_id: commentId});
+            const comment = await Comment.findById({_id: id});
 
             comment.isCheck = true;
             await comment.save()

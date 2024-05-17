@@ -5,8 +5,10 @@ const roleMiddleware = require("../middleware/role.middleware")
 
 router.post("/add", commentController.add);
 router.delete("/delete", commentController.delete);
-router.get("/all", commentController.getAllComments);
+router.get("/check/all", commentController.getAllCommentsCheck);
 
-router.post("/check",roleMiddleware("ADMIN"),  commentController.check);
+router.get("/admin/all",roleMiddleware("ADMIN"), commentController.getAllComments);
+
+router.post("/admin/check",roleMiddleware("ADMIN"),  commentController.check);
 
 module.exports = router
