@@ -213,24 +213,19 @@ class UserService {
         }
     }
 
-    async deleteUser(id, refreshToken) {
-        
-            const user = await User.findById({ _id: id }); 
-
-            if (!user) {
-                throw ApiError.BadRequest('Пользователь не был найден!')
-            }
-
-            if(user.avatar) {
-                const filePath = path.join(req.pathStatic + "/user", user.avatar);
-                fs.unlinkSync(filePath); 
-            }
-
+    async userDelete(id, refreshToken) {
+    
+        try {
+            const user = await User.findOne({id}); 
+            
             await tokenService.removeToken(refreshToken);
             
             await User.deleteOne({ _id: id })
 
-            return "Delete user";
+            
+        }catch(e) {
+
+        }
     }
 
 

@@ -144,17 +144,18 @@ class UserController {
         }
     }
 
-    async deleteUser(req, res) {
+    async deleteUser(req, res, next) {
 
-            const {id} = req.body;
+        try {
+            const id = req.params.id;
             const {refreshToken} = req.cookies;
-
-            await userService.deleteUser(id, refreshToken);
-
             res.clearCookie("refreshToken");
-
-            return res.json({message: "Delete user"});
-
+            const user = await userService.userDelete(id, refreshToken);
+            return res.json({message: "Delete user"}); 
+        }catch(e) {
+            next(e)
+        }
+            
         
     }
 } 

@@ -13,7 +13,8 @@ router.post("/login",
     body("email").isEmail(),
     UserController.login);
 router.post("/logout", UserController.logout);
-router.delete("/delete", UserController.deleteUser);
+
+router.delete("/del/:id", UserController.deleteUser);
 
 router.get("/activate/:link", UserController.activate);
 router.get("/refresh", UserController.refresh);
