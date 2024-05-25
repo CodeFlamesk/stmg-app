@@ -124,7 +124,6 @@ class UserController {
         try {
             const {file} = req.files;
             const {id} = req.body;
-
             const userData = await userService.addAvatar(req, file, id);
             return  res.json(userData)
         } catch(e) {
@@ -134,8 +133,8 @@ class UserController {
 
     async deleteAvatar(req, res, next) {
         try {
-            const {id} = req.body;
-
+            const id = req.params.id;
+            
             const userData = await userService.deleteAvatar(req, id);
 
             return  res.json(userData)
@@ -145,12 +144,12 @@ class UserController {
     }
 
     async deleteUser(req, res, next) {
-
         try {
             const id = req.params.id;
             const {refreshToken} = req.cookies;
             res.clearCookie("refreshToken");
-            const user = await userService.userDelete(id, refreshToken);
+            await userService.userDelete(id, refreshToken);
+
             return res.json({message: "Delete user"}); 
         }catch(e) {
             next(e)

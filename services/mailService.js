@@ -1,6 +1,6 @@
 
-const  nodemailer = require("nodemailer")
-const path = require("path")
+const nodemailer = require("nodemailer");
+const path = require("path");
 
 class MailService {
 

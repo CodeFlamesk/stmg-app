@@ -3,7 +3,7 @@
 const BlogService = require("../services/blogService");
 const Blog = require("../models/Blog");
 const Category = require("../models/Category");
-
+const User = require("../models/User")
 
 
 
@@ -13,30 +13,29 @@ class BlogController {
     async addBlog(req, res) {
         try {
             //Проверка есть ли  файлы в запросе
-            const _id = req.params.id;
+            const categoryId = req.params.id;
             const {
                 descriptionTag, 
                 mainTitle, 
-                intro, 
-                author, 
-                description, 
+                intro,
+                description,
+                id
             } = req.body;
         
             const date = await BlogService.createDate();
-
-            const file = req.files.file;
-            
-            // вернуть имя файла и переместить файл в папку static
+            const user = await User.findById({_id: id});
+            const {file} = req.files;
+        
             const fileName = await BlogService.addImage(req, file);
 
             const time = await BlogService.createTimeReading(description)
 
-            const category = await Category.findById({_id})
+            const category = await Category.findById({_id: categoryId})
             const blog = new Blog({
                 mainTitle:mainTitle, 
                 imageBlog: fileName,
                 introductionText: intro,
-                author: author,
+                author: `${user.name}` + ` ${user.surname}`,
                 categoryId: category.title,
                 readingTime: time,
                 description:description,

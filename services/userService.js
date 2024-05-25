@@ -169,10 +169,14 @@ class UserService {
     async addAvatar(req, file, id){
         try {
             
-
             const user = await User.findById({_id: id});
 
             const avatarName = uuid.v4() + ".jpg";
+
+            if(user.avatar) {
+                const filePath = path.join(req.pathStatic + "/user", user.avatar);
+                fs.unlinkSync(filePath); 
+            }
 
             const filePath = path.join(req.pathStatic + "/user", avatarName);
 
@@ -193,14 +197,19 @@ class UserService {
         try {
             const user = await User.findById({_id:id}); 
             
+            console.log(user)
             if (!user) {
                 throw  ApiError.BadRequest('Пользователь не был найден!')
+            }
+            if(!user.avatar) {
+                throw  ApiError.BadRequest('Аватар у пользователя не был найден!')
             }
 
             const filePath = path.join(req.pathStatic + "/user", user.avatar);
 
             fs.unlinkSync(filePath); 
 
+            user.avatar = "";
             await user.save();
 
             const userDto = new UserDto(user)
@@ -214,31 +223,25 @@ class UserService {
     }
 
     async userDelete(id, refreshToken) {
-    
         try {
-            const user = await User.findOne({id}); 
+            const user = await User.findById({_id: id}); 
             
             await tokenService.removeToken(refreshToken);
             
             await User.deleteOne({ _id: id })
-
-            
-        }catch(e) {
-
-        }
+        } catch(e) {
+        }    
     }
 
 
     async deleteComment(userId, commentId) {
         try {
             const user = await User.findOne({_id: userId});
-
             if (!user) {
                 throw  ApiError.BadRequest('Пользователь не был найден!')
             } 
             
             user.comments = await user.comments.filter(item => item._id !== commentId);
-
             await user.save();
             
         } catch(e) {

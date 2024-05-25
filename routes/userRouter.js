@@ -29,7 +29,7 @@ router.post("/password",
 router.post("/password/change",  UserController.changePassword);
 
 router.post("/avatar", UserController.addImage);
-router.delete("/avatar", UserController.deleteAvatar);
+router.delete("/avatar/:id", UserController.deleteAvatar);
 
 
 module.exports = router

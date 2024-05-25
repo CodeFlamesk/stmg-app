@@ -6,6 +6,7 @@ module.exports = class UserDto {
     surname;
     role;
     isActivated;
+    avatar;
 
     constructor(model) {
         this.email = model.email;
@@ -14,6 +15,6 @@ module.exports = class UserDto {
         this.name = model.name;
         this.surname = model.surname;
         this.role = model.role;
-        this.role = model.isActivated;
+        this.avatar = model.avatar;
     }
 }

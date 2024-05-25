@@ -17,14 +17,14 @@ class FeedbackController {
                 message,
                 tel
             })
+
             await feedback.save();
+            
             return res.json({message:"Thanks for your feedback"});
         } catch(e) {
             console.log(e)
         }
     }
-
-
 }
 
 
