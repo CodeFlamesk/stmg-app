@@ -45,6 +45,7 @@ class CommentController {
             next(e)
         }
     }
+    
     async check(req, res, next) {
         // role ADMIN
         try {

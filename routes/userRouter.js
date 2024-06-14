@@ -12,6 +12,7 @@ router.post("/registration",
 router.post("/login", 
     body("email").isEmail(),
     UserController.login);
+    
 router.post("/logout", UserController.logout);
 
 router.delete("/del/:id", UserController.deleteUser);

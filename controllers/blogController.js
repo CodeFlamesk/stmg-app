@@ -12,7 +12,7 @@ class BlogController {
 
     async addBlog(req, res) {
         try {
-            //Проверка есть ли  файлы в запросе
+
             const categoryId = req.params.id;
             const {
                 descriptionTag, 
@@ -26,7 +26,9 @@ class BlogController {
             const user = await User.findById({_id: id});
             const {file} = req.files;
         
+            console.log(file)
             const fileName = await BlogService.addImage(req, file);
+
 
             const time = await BlogService.createTimeReading(description)
 
@@ -46,6 +48,7 @@ class BlogController {
             await blog.save();
 
             return res.json(blog)
+            
         }catch(e) {
             console.log(e)
         }
