@@ -12,7 +12,7 @@
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.3.3",
-    "nodemailer": "^6.9.13",
+    "nodemailer": "^6.9.16",
     "reading-time": "^1.5.0",
     "uuid": "^9.0.1"
   },
